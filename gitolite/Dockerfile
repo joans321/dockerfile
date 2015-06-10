@@ -2,7 +2,6 @@
 
 FROM ubuntu:14.04
 
-
 MAINTAINER joans <xjq9296@gmail.com>
 
 # Use aliyun for chinse
@@ -27,8 +26,6 @@ RUN su git -c "mkdir /home/git/bin"
 RUN cd /home/git; su git -c "git clone https://github.com/sitaramc/gitolite"
 RUN cd /home/git/gitolite; su git -c "git checkout -b v3.6.3 v3.6.3"
 RUN cd /home/git/gitolite; su git -c "./install -ln"
-
-ADD sources.list /etc/apt/sources.list
 
 # Install git and ssh server
 RUN apt-get update
