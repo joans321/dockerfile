@@ -44,9 +44,6 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get autoremove
 ADD setup.sh /init
 RUN chmod +x /init
 
-# For test
-CMD echo "hello gitolite server"
-
 ENTRYPOINT ["/init"]
 
 # sshd port
