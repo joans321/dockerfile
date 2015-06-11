@@ -19,11 +19,28 @@ function setup_gitolite() {
     else
         su git -c "$GITOLITE setup -a dummy"
     fi
+
+    # Enable all config default, I like this feature
+    # Config maillist in the gitolite-admin's gitolite.conf file
+    if [ -z "$GIT_CONFIG_KEYS" ]; then
+        GIT_CONFIG_KEYS=.*
+    fi
+
+    rcfile=$GITHOME/.gitolite.rc
+    sed -i "s/GIT_CONFIG_KEYS.*=>.*''/GIT_CONFIG_KEYS => \"${GIT_CONFIG_KEYS}\"/g" $rcfile
+
+    if [ -n "$LOCAL_CODE" ]; then
+        sed -i "s|# LOCAL_CODE.*=>.*$|LOCAL_CODE => \"${LOCAL_CODE}\",|" $rcfile
+    fi
+
+    # change unmask, you need to do chmod for alread exist files manually.
+    if [ -n "$UMASK" ]; then
+        sed -i "s/UMASK.*=>.*/UMASK => ${UMASK},/g" $rcfile
+    fi
 }
 
 function import_repo() {
     GITADMIN_TMPD=/tmp/gitolite-admin.git
-
 
     if [ -d ./repositories/gitolite-admin.git ]; then
         mv ./repositories/gitolite-admin.git  $GITADMIN_TMPD
@@ -32,21 +49,23 @@ function import_repo() {
     setup_gitolite
 
     if [ -d $GITADMIN_TMPD ]; then
+        echo "restore to original gitolite-admin"
         rm -rf ./repositories/gitolite-admin.git
         mv $GITADMIN_TMPD ./repositories/gitolite-admin.git
 
-        su git -c "echo $PATH"
         # update authorized_keys
         su git -c "cd /home/git/repositories/gitolite-admin.git && GL_LIBDIR=$($GITOLITE query-rc GL_LIBDIR) PATH=$PATH hooks/post-update refs/heads/master"
     fi
+
+    echo "Configure gitolite server successfully !!!"
 }
 
+# Change owner and permission when system start
+chown -R git.git $GITHOME
+cd $GITHOME
+
+# Setup gitolite when system start
 if [ ! -f $INITFILE ]; then
-    cd $GITHOME
-
-    # Change owner first time start
-    chown -R git.git $GITHOME
-
     if [ -d repositories ]; then
         import_repo
     fi
@@ -58,6 +77,7 @@ if [ ! -f $INITFILE ]; then
 fi
 
 service ssh start
+service postfix start
 
 if [ $# -ne 0 ]; then
     exec $*

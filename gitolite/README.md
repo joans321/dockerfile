@@ -34,7 +34,7 @@ Run docker command to start gitolite with your repositories :
 
 # Require
 * admin's pub key for new repositories
-* mail config for msmtp
+* email config for msmtp if not use postfix
 * mount old repo dir to /home/git/repositories for import the already repositories
 
 # Enviroment

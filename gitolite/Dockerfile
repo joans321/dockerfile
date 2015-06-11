@@ -14,6 +14,7 @@ RUN apt-get update
 RUN apt-get install -y git
 RUN apt-get install -y openssh-server
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y postfix
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y mailutils
 
 
 # Fix locale bug
