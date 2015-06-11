@@ -22,15 +22,20 @@ RUN echo 'LANGUAGE="en_US:en"' >> /etc/default/locale
 
 # Add git user and install gitolite for git user
 RUN adduser --system --group --shell /bin/bash git
-RUN su git -c "mkdir /home/git/bin"
-RUN cd /home/git; su git -c "git clone https://github.com/sitaramc/gitolite"
-RUN cd /home/git/gitolite; su git -c "git checkout -b v3.6.3 v3.6.3"
-RUN cd /home/git/gitolite; su git -c "./install -ln"
+RUN cd /tmp; git clone https://github.com/sitaramc/gitolite
+RUN cd /tmp/gitolite; git checkout -b v3.6.3 v3.6.3
+RUN mkdir -p /usr/local/gitolite
+RUN /tmp/gitolite/install -to /usr/local/gitolite
+RUN echo "PATH=$PATH:/usr/local/gitolite" >> /etc/bash.bashrc
+
+# Setup enviroment and start some service for gitolite
+ADD setup.sh /init
+ADD chmod +x /init
 
 # For test
 CMD echo "hello gitolite server"
 
-ENTRYPOINT ["/bin/bash"]
+ENTRYPOINT ["/init"]
 
 # sshd port
 EXPOSE 22
