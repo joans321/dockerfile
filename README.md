@@ -1,2 +1,9 @@
 # dockerfile
-dockerfile project for docker hub auto build
+
+Dockerfile project for docker hub auto build.
+
+## gitolite
+
+Gitolite server
+
+
