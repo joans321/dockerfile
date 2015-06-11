@@ -30,7 +30,7 @@ RUN echo "PATH=$PATH:/usr/local/gitolite" >> /etc/bash.bashrc
 
 # Setup enviroment and start some service for gitolite
 ADD setup.sh /init
-ADD chmod +x /init
+RUN chmod +x /init
 
 # For test
 CMD echo "hello gitolite server"
