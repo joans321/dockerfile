@@ -1,6 +1,10 @@
 #!/bin/sh
 
 export PATH=$PATH:/usr/bin/gitolite
+export LANG="en_US.UTF-8"
+export LANGUAGE="en_US:en"
+
+
 GITOLITE=/usr/local/gitolite/gitolite
 
 GITHOME=/home/git
