@@ -14,9 +14,10 @@ INITFILE=$GITHOME/.gitserver_init
 
 # Install auto email hook
 function setup_mail() {
+    echo "setup email hooks..."
     POST_MAIL=/usr/local/gitolite/post-receive-email
     su git -c "cp $POST_MAIL $GITHOME/.gitolite/hooks/common/post-receive"
-    su git -c "gitolite setup --hooks-only"
+    su git -c "$GITOLITE setup --hooks-only"
 }
 
 function setup_gitolite() {
@@ -46,6 +47,8 @@ function setup_gitolite() {
     if [ -n "$UMASK" ]; then
         sed -i "s/UMASK.*=>.*/UMASK => ${UMASK},/g" $rcfile
     fi
+
+    setup_mail
 }
 
 function import_repo() {
@@ -56,7 +59,6 @@ function import_repo() {
     fi
 
     setup_gitolite
-    setup_mail
 
     if [ -d $GITADMIN_TMPD ]; then
         echo "restore to original gitolite-admin"
