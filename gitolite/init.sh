@@ -1,5 +1,7 @@
 #!/bin/bash
 
+### Init gitolite server when docker container start
+
 export PATH=$PATH:/usr/local/gitolite
 export LANG="en_US.UTF-8"
 export LANGUAGE="en_US:en"
@@ -9,6 +11,13 @@ GITOLITE=/usr/local/gitolite/gitolite
 GITHOME=/home/git
 
 INITFILE=$GITHOME/.gitserver_init
+
+# Install auto email hook
+function setup_mail() {
+    POST_MAIL=/usr/local/gitolite/post-receive-email
+    su git -c "cp $POST_MAIL $GITHOME/.gitolite/hooks/common/post-receive"
+    su git -c "gitolite setup --hooks-only"
+}
 
 function setup_gitolite() {
     if [ -n "$SSH_KEY" ]; then
@@ -47,6 +56,7 @@ function import_repo() {
     fi
 
     setup_gitolite
+    setup_mail
 
     if [ -d $GITADMIN_TMPD ]; then
         echo "restore to original gitolite-admin"
