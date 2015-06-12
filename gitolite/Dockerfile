@@ -15,6 +15,12 @@ RUN apt-get install -y git
 RUN apt-get install -y openssh-server
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y postfix
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y mailutils
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y mailutils
+RUN apt-get install -y msmtp
+RUN apt-get install -y mutt
+
+# For debug
+RUN apt-get install -y rsyslog
 
 
 # Fix locale bug
