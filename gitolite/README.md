@@ -35,8 +35,11 @@ Run docker command to start gitolite with your repositories :
 ## Configure email account
 
 If you use postfix as email server, just skip this category.
+
 The email client is msmtprc, so you need to setup account for it.
+
 You have two way to setup the account config :
+
 * Adding a data volument and assign the msmtprc path through by var *MSMTPRC*. Do command like this:
 
 	$ sudo docker run -it --rm -v YourMsmtprcPath:/data -e MSMTPRC=/data/msmtprc joans321/gitolite
@@ -45,7 +48,7 @@ You have two way to setup the account config :
 
 	$ sudo docker run -it --rm -e EMAIL_ACCOUNT=EmailAddress -e EMAIL_PASSWD=EmailPasswd joans321/gitolite
 
-> Note : email host default is mail.{$domain of your email address}, you can change through by var EMAIL_HOST
+> Note : email host default is mail.{$domain of your email address}, you can change through by var EMAIL_HOST.
 
 
 ## Configure email recipients
@@ -54,11 +57,13 @@ You have two way to setup the account config :
 * add *config hooks.mailinglist* to *conf/gitolite.conf* file for the repo
 * Example like this :
 
-    repo gitolite-admin
-        RW+     =   admin
-        config hooks.mailinglist = YourEmailAddress, AnotherManEmail
+```sh
+repo gitolite-admin
+    RW+     =   admin
+    config hooks.mailinglist = YourEmailAddress, AnotherManEmail
+```
 
-> NOte : hooks.mailinglist will work at next commit
+> Note : hooks.mailinglist will work at next commit
 
 # Require
 * admin's pub key for new repositories
