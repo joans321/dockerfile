@@ -42,14 +42,12 @@ RUN /tmp/gitolite/install -to /usr/local/gitolite
 RUN echo "PATH=\$PATH:/usr/local/gitolite" >> /etc/bash.bashrc
 
 # Setup email post-receive script
-RUN cd /tmp; git clone http://github.com/joans321/dockerfile.git
-RUN cp /tmp/dockerfile/gitolite/post-receive-email /usr/local/gitolite/
+ADD post-receive-email /usr/local/gitolite/
 
 # Clear unuse packages
 RUN rm -rf /tmp/gitolite
 RUN rm -rf /tmp/dockerfile
 RUN DEBIAN_FRONTEND=noninteractive apt-get autoremove
-
 
 # Setup enviroment and start some service for gitolite
 ADD init.sh /init

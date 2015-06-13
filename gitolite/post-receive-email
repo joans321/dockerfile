@@ -51,7 +51,7 @@
 #   If set then the -f option is passed to sendmail to allow the envelope
 #   sender address to be set
 # hooks.emailprefix
-#   All emails have their subjects prefixed with this prefix, or "[SCM]"
+#   All emails have their subjects prefixed with this prefix, or "[GIT]"
 #   if emailprefix is unset, to aid filtering
 # hooks.showrev
 #   The shell command used to format each revision in the email, with
@@ -181,6 +181,12 @@ prep_for_email()
 		return 1
 	fi
 
+	# Add by joans
+	# Get author from the commit
+	if [ -z "$envelopesender" ]; then
+		envelopesender=`git --no-pager show -s --format='%an <%ae>' $newrev`
+	fi
+
 	return 0
 }
 
@@ -209,7 +215,7 @@ generate_email()
 	# that we can build from the parameters
 	describe=$(git describe $rev 2>/dev/null)
 	if [ -z "$describe" ]; then
-		describe=$rev
+		describe=$(git log -n 1 --pretty=format:'%s' $rev)
 	fi
 
 	generate_email_header
@@ -240,7 +246,7 @@ generate_email_header()
 	# Generate header
 	cat <<-EOF
 	To: $recipients
-	Subject: ${emailprefix}$projectdesc $refname_type $short_refname ${change_type}d. $describe
+	Subject: ${emailprefix}$projectdesc $refname_type $short_refname ${change_type}d : $describe
 	MIME-Version: 1.0
 	Content-Type: text/plain; charset=utf-8
 	Content-Transfer-Encoding: 8bit
@@ -250,9 +256,7 @@ generate_email_header()
 	X-Git-Newrev: $newrev
 	Auto-Submitted: auto-generated
 
-	This is an automated email from the git hooks/post-receive script. It was
-	generated because a ref change was pushed to the repository containing
-	the project "$projectdesc".
+	The project "$projectdesc": (modify by $GL_USER)
 
 	The $refname_type, $short_refname has been ${change_type}d
 	EOF
@@ -288,7 +292,7 @@ generate_create_branch_email()
 
 #
 # Called for the change of a pre-existing branch
-#
+ #
 generate_update_branch_email()
 {
 	# Consider this:
@@ -672,7 +676,8 @@ show_new_revisions()
 	git rev-parse --not $other_branches |
 	if [ -z "$custom_showrev" ]
 	then
-		git rev-list --pretty --stdin $revspec
+		# git rev-list --pretty --stdin $revspec
+		git rev-list --pretty=format:%s --stdin $revspec
 	else
 		git rev-list --stdin $revspec |
 		while read onerev
@@ -730,13 +735,13 @@ projectdesc=$(sed -ne '1p' "$GIT_DIR/description" 2>/dev/null)
 # a more manageable length if it is
 if expr "$projectdesc" : "Unnamed repository.*$" >/dev/null
 then
-	projectdesc="UNNAMED PROJECT"
+	projectdesc="$GL_REPO"
 fi
 
 recipients=$(git config hooks.mailinglist)
 announcerecipients=$(git config hooks.announcelist)
 envelopesender=$(git config hooks.envelopesender)
-emailprefix=$(git config hooks.emailprefix || echo '[SCM] ')
+emailprefix=$(git config hooks.emailprefix || echo '[GIT] ')
 custom_showrev=$(git config hooks.showrev)
 maxlines=$(git config hooks.emailmaxlines)
 diffopts=$(git config hooks.diffopts)

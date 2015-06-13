@@ -12,6 +12,7 @@ Gitolite image base on ubuntu 14.04 and support auto send email after repo updat
 # Usage
 
 ## New Git Server
+
 Gitolite only need your ssh public key if you are first time to use it.
 Generator a new ssh key in the *~/.ssh* directory with command :
 
@@ -31,6 +32,23 @@ Run docker command to start gitolite with your repositories :
 
 	$ sudo docker run -it --rm -v YourRepoDir:/home/git/repositories joans321/gitolite
 
+## Configure email account
+
+If you use postfix as email server, just skip this category.
+
+
+
+## Configure email recipients
+
+* clone the gitolite-admin at your container
+* add *config hooks.mailinglist* to *conf/gitolite.conf* file for the repo
+* Example like this :
+
+    repo gitolite-admin
+        RW+     =   admin
+        config hooks.mailinglist = YourEmailAddress
+
+*NOte : hooks.mailinglist will work at next commit*
 
 # Require
 * admin's pub key for new repositories
