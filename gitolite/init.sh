@@ -12,12 +12,59 @@ GITHOME=/home/git
 
 INITFILE=$GITHOME/.gitserver_init
 
-# Install auto email hook
+# Install auto email hook and account
 function setup_mail() {
     echo "setup email hooks..."
     POST_MAIL=/usr/local/gitolite/post-receive-email
     su git -c "cp $POST_MAIL $GITHOME/.gitolite/hooks/common/post-receive"
     su git -c "$GITOLITE setup --hooks-only"
+
+    setup_email_config
+}
+
+# Copy msmtprc file or create with EMAIL_* environments
+function setup_email_config() {
+    if [ -n "$MSMTPRC" ]; then
+        if [ ! -f "$MSMTPRC" ]; then
+            echo >&2 "Cannot find file : $MSMTPRC"
+            return
+        fi
+
+        echo "Setup Msmtp config from $MSMTPRC"
+        su git -c "cp $MSMTPRC ~/.msmtprc"
+        su git -c "chmod 600 ~/.msmtprc"
+        return
+    fi
+
+    if [ -z "$EMAIL_ACCOUNT" ]; then
+        return
+    fi
+
+    echo "Setup Msmtp config file :"
+
+    domain=`echo $EMAIL_ACCOUNT | awk -F\@ '{print \$2}'`
+    if [ -z "$domain" ]; then
+        echo >&2 "Invalid email account address : $EMAIL_ACCOUNT"
+        return
+    fi
+
+    if [ -z "$EMAIL_HOST" ]; then
+        EMAIL_HOST="mail.${domain}"
+    fi
+
+    echo "    Email Address : $EMAIL_ACCOUNT"
+    echo "    Email Host    : $EMAIL_HOST"
+
+    su git -c "cat << EOF > ~/.msmtprc
+account default
+host $EMAIL_HOST
+auth login
+from $EMAIL_ACCOUNT
+user $EMAIL_ACCOUNT
+password $EMAIL_PASSWD
+logfile ''
+EOF"
+    su git -c "chmod 600 ~/.msmtprc"
 }
 
 function setup_gitolite() {

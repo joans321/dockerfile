@@ -6,7 +6,7 @@ Gitolite image base on ubuntu 14.04 and support auto send email after repo updat
 
 * gitolite server
 * support import repositories
-* support auto email when update repo --- pending
+* support auto email when update repo
 * support jenkins notify ---- pending
 
 # Usage
@@ -35,7 +35,17 @@ Run docker command to start gitolite with your repositories :
 ## Configure email account
 
 If you use postfix as email server, just skip this category.
+The email client is msmtprc, so you need to setup account for it.
+You have two way to setup the account config :
+* Adding a data volument and assign the msmtprc path through by var *MSMTPRC*. Do command like this:
 
+	$ sudo docker run -it --rm -v YourMsmtprcPath:/data -e MSMTPRC=/data/msmtprc joans321/gitolite
+
+* Use email account and password through by var *EMAIL_ACCOUNT* and *EMAIL_PASSWD*. Do command like this:
+
+	$ sudo docker run -it --rm -e EMAIL_ACCOUNT=EmailAddress -e EMAIL_PASSWD=EmailPasswd joans321/gitolite
+
+> Note : email host default is mail.{$domain of your email address}, you can change through by var EMAIL_HOST
 
 
 ## Configure email recipients
@@ -46,9 +56,9 @@ If you use postfix as email server, just skip this category.
 
     repo gitolite-admin
         RW+     =   admin
-        config hooks.mailinglist = YourEmailAddress
+        config hooks.mailinglist = YourEmailAddress, AnotherManEmail
 
-*NOte : hooks.mailinglist will work at next commit*
+> NOte : hooks.mailinglist will work at next commit
 
 # Require
 * admin's pub key for new repositories

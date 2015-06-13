@@ -245,6 +245,7 @@ generate_email_header()
 	# --- Email (all stdout will be the email)
 	# Generate header
 	cat <<-EOF
+	From: $envelopesender
 	To: $recipients
 	Subject: ${emailprefix}$projectdesc $refname_type $short_refname ${change_type}d : $describe
 	MIME-Version: 1.0
@@ -705,13 +706,15 @@ limit_lines()
 	fi
 }
 
+SENDMAIL_MSMTP=/usr/bin/msmtp
+SENDMAIL_POSTFIX=/usr/sbin/sendmail
 
 send_mail()
 {
-	if [ -n "$envelopesender" ]; then
-		/usr/sbin/sendmail -t -f "$envelopesender"
+	if [ -f ~/.msmtprc ]; then
+		$SENDMAIL_MSMTP -t
 	else
-		/usr/sbin/sendmail -t
+		$SENDMAIL_POSTFIX -t -f "$envelopesender"
 	fi
 }
 
