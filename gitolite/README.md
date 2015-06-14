@@ -30,7 +30,7 @@ If you already have repositories, what you need to do is import them.
 
 Run docker command to start gitolite with your repositories :
 
-	$ sudo docker run -it --rm -v YourRepoDir:/home/git/repositories joans321/gitolite
+    $ sudo docker run -it --rm -v YourRepoDir:/home/git/repositories joans321/gitolite
 
 ## Configure email account
 
@@ -42,11 +42,11 @@ You have two way to setup the account config :
 
 * Adding a data volument and assign the msmtprc path through by var *MSMTPRC*. Do command like this:
 
-	$ sudo docker run -it --rm -v YourMsmtprcPath:/data -e MSMTPRC=/data/msmtprc joans321/gitolite
+    $ sudo docker run -it --rm -v YourMsmtprcPath:/data -e MSMTPRC=/data/msmtprc joans321/gitolite
 
 * Use email account and password through by var *EMAIL_ACCOUNT* and *EMAIL_PASSWD*. Do command like this:
 
-	$ sudo docker run -it --rm -e EMAIL_ACCOUNT=EmailAddress -e EMAIL_PASSWD=EmailPasswd joans321/gitolite
+    $ sudo docker run -it --rm -e EMAIL_ACCOUNT=EmailAddress -e EMAIL_PASSWD=EmailPasswd joans321/gitolite
 
 > Note : email host default is mail.{$domain of your email address}, you can change through by var EMAIL_HOST.
 
