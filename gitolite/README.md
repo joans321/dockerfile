@@ -65,6 +65,32 @@ repo gitolite-admin
 
 > Note : hooks.mailinglist will work at next commit
 
+## Send email failed
+
+Sometime send email function maybe not work because of various email server.
+If failed, you can follow the list step by step :
+
+* both try msmtp and postfix
+* set fix envelope sender if use postfix
+
+  add *config hooks.envelopesender* to *conf/gitolite.conf*
+
+* set envelope sender domain different with recipient if use postfix
+* start rsyslog service if use postfix
+
+    $ service rsyslog start
+    $ cat /var/log/mail.log
+
+* check server info if use msmtp
+
+    $ msmtp --serverinfo
+
+* enable msmtp log by modify ~/.msmtprc
+
+```sh
+logfile ~/msmtp.log
+```
+
 # Require
 * admin's pub key for new repositories
 * email config for msmtp if not use postfix
