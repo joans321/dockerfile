@@ -751,6 +751,10 @@ then
 	projectdesc="$GL_REPO"
 fi
 
+if [ -z "$projectdesc" ]; then
+	projectdesc="$GL_REPO"
+fi
+
 recipients=$(git config hooks.mailinglist)
 announcerecipients=$(git config hooks.announcelist)
 envelopesender=$(git config hooks.envelopesender)
