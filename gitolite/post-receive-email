@@ -244,9 +244,16 @@ generate_email_header()
 {
 	# --- Email (all stdout will be the email)
 	# Generate header
+	# difference between msmtp and postfix
+	if [ -f ~/.msmtprc ]; then
+		recipients_format=`echo "$recipients"|sed 's/^ *//;s/ *$//;s/ \+/,/g'`
+	else
+		recipients_format=$recipients
+	fi
+
 	cat <<-EOF
 	From: $envelopesender
-	To: $recipients
+	To: $recipients_format
 	Subject: ${emailprefix}$projectdesc $refname_type $short_refname ${change_type}d : $describe
 	MIME-Version: 1.0
 	Content-Type: text/plain; charset=utf-8
@@ -706,7 +713,10 @@ limit_lines()
 	fi
 }
 
-SENDMAIL_MSMTP=/usr/bin/msmtp
+SENDMAIL_MSMTP=`which msmtp`
+if [ -z "$SENDMAIL_MSMTP" ]; then
+	SENDMAIL_MSMTP=/usr/bin/msmtp
+fi
 SENDMAIL_POSTFIX=/usr/sbin/sendmail
 
 send_mail()
