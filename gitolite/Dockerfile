@@ -34,7 +34,7 @@ RUN echo 'LANGUAGE="en_US:en"' >> /etc/default/locale
 
 
 # Add git user and install gitolite for git user
-RUN adduser --system --group --shell /bin/bash git
+RUN adduser --group --shell /bin/bash git
 RUN cd /tmp; git clone http://github.com/sitaramc/gitolite
 RUN cd /tmp/gitolite; git checkout -b v3.6.3 v3.6.3
 RUN mkdir -p /usr/local/gitolite

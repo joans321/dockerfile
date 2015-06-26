@@ -91,6 +91,10 @@ If failed, you can follow the list step by step :
 logfile ~/msmtp.log
 ```
 
+# Issue
+You can create issue at [Github Issue](http://github.com/joans321/dockerfile/issues).
+I will love to help you at the free time.
+
 # Require
 * admin's pub key for new repositories
 * email config for msmtp if not use postfix
